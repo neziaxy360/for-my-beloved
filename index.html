@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="img/heart.png">
+    <link rel="icon" type="image/png" href="https://placehold.co/16x16/ff69b4/ffffff?text=%E2%9D%A4">
     <title>FOR MY BABY</title>
     <style>
         body, html {
@@ -31,17 +31,7 @@
             z-index: 10;
         }
 
-        h1 {
-            font-weight: 300;
-            letter-spacing: 2px;
-            margin: 0;
-            font-size: 1.5rem;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            opacity: 0.9;
-        }
-
-        /* --- The Button --- */
+        /* --- The "Open Me" Button --- */
         #letter-btn {
             position: absolute;
             top: 50%;
@@ -69,7 +59,7 @@
             box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6);
         }
 
-        /* --- The Letter Modal --- */
+        /* --- The Letter Modal Wrapper --- */
         #letter-overlay {
             position: fixed;
             top: 0;
@@ -84,21 +74,30 @@
             align-items: center;
         }
 
+        /* --- The Paper (Flex Container) --- */
         #letter-paper {
             width: 90%;
             max-width: 500px;
-            /* Increased height slightly to fit the new button */
+            /* We let height be auto so it stretches with content */
             height: auto;
+            /* But we cap it at 80% of screen height and scroll if needed */
             max-height: 80vh;
-            background-color: #fffaf0; /* Ivory paper */
+            overflow-y: auto;
+            
+            background-color: #fffaf0; 
             padding: 40px;
             border-radius: 5px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             position: relative;
+            
+            /* Lined paper background */
             background-image: linear-gradient(#e1e1e1 1px, transparent 1px);
-            background-size: 100% 1.5rem; /* Lined paper effect */
-            overflow-y: auto;
+            background-size: 100% 1.5rem; 
+            
             animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            
+            /* --- CRITICAL FIX: Flex Layout --- */
+            /* This forces items to stack vertically */
             display: flex;
             flex-direction: column;
         }
@@ -108,21 +107,29 @@
             to { transform: scale(1); opacity: 1; }
         }
 
+        /* --- The Text Content --- */
         #letter-content {
             font-family: 'Courier New', Courier, monospace;
             font-size: 1.1rem;
             line-height: 1.5rem;
             color: #555;
             outline: none;
-            min-height: 150px;
-            margin-bottom: 20px;
+            margin-bottom: 30px; /* Space between text and button */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            width: 100%; /* Ensure text takes full width */
         }
 
-        /* --- Redirect Button Inside Letter --- */
+        /* --- The "Claim Gift" Button --- */
         #redirect-btn {
-            display: block;
+            /* No position absolute! It sits in the flow now. */
+            position: relative;
+            display: inline-block;
             width: fit-content;
-            margin: 0 auto 10px auto;
+            
+            /* Center the button horizontally */
+            align-self: center; 
+            
             padding: 12px 24px;
             background-color: #d81b60;
             color: white;
@@ -134,8 +141,9 @@
             box-shadow: 0 4px 10px rgba(216, 27, 96, 0.3);
             transition: transform 0.2s, background-color 0.2s;
             cursor: pointer;
-            text-align: center;
-            z-index: 2; /* Ensure it clicks above paper */
+            z-index: 2;
+            margin-bottom: 20px; /* Space between button and seal */
+            flex-shrink: 0; /* Prevents button from shrinking */
         }
 
         #redirect-btn:hover {
@@ -158,10 +166,14 @@
             color: #d81b60;
         }
 
+        /* --- The Wax Seal --- */
         .wax-seal {
-            position: absolute;
-            bottom: 20px;
-            right: 30px;
+            /* No position absolute! */
+            position: relative;
+            
+            /* Push to the right side of the paper */
+            align-self: flex-end;
+            
             width: 60px;
             height: 60px;
             background: #d81b60;
@@ -175,6 +187,8 @@
             font-size: 24px;
             font-style: italic;
             pointer-events: none;
+            flex-shrink: 0;
+            margin-right: 10px; /* Slight offset from edge */
         }
     </style>
 </head>
@@ -187,20 +201,28 @@
     <div id="letter-overlay">
         <div id="letter-paper">
             <button id="close-btn">&times;</button>
-            <div id="letter-content" contenteditable="true">
-Dear Beloved,
+            
+            <div id="letter-content">
+My Dearest Love,
 
-Happy Valentine's Day! 
+Happy 1st Monthsary! 
 
-I created this field of flowers just for you. Each one represents a happy memory we share. 
+I created this field of flowers just for you. Each one represents a happy memory we share and my everlasting love.
 
-You can edit this text to write your own message...
+We’ve known each other for a year, but being officially together this past month has made everything feel more real and special. It’s different now in the best way, because I get to call you mine and love you openly.
+
+Thank you for choosing me, for staying, and for making this new chapter feel so natural and sincere. I’m grateful that we took our time, got to know each other, and built something real before becoming “us.”
+
+I’m happy with you, and I’m excited for the days, months, and memories waiting ahead. Here’s to our first month, and to many more moments together.
+
+I love you. 💕✨
+
+Click the button below to claim your gift!
 
 With all my love,
-[Your Name]
+Your Sweetheart
             </div>
             
-            <!-- CHANGE THE HREF BELOW TO YOUR LINK -->
             <a id="redirect-btn" href="flower.html">This is for you Babe</a>
             
             <div class="wax-seal">❤</div>
@@ -210,53 +232,21 @@ With all my love,
     <canvas id="canvas"></canvas>
 
     <script>
-        /**
-         * Configuration & Setup
-         */
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-
         let width, height;
         let dpr = window.devicePixelRatio || 1;
-
-        // UI Logic
         const btn = document.getElementById('letter-btn');
         const overlay = document.getElementById('letter-overlay');
         const closeBtn = document.getElementById('close-btn');
 
-        btn.addEventListener('click', () => {
-            overlay.style.display = 'flex';
-        });
+        btn.addEventListener('click', () => { overlay.style.display = 'flex'; });
+        closeBtn.addEventListener('click', () => { overlay.style.display = 'none'; });
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.style.display = 'none'; });
 
-        closeBtn.addEventListener('click', () => {
-            overlay.style.display = 'none';
-        });
-        
-        // Close on clicking outside paper
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                overlay.style.display = 'none';
-            }
-        });
+        const flowers = [], hearts = [], clouds = [];
+        const petalColors = ['#FFB7B2', '#FF9AA2', '#FFDAC1', '#FF69B4', '#FFC0CB', '#F8BBD0', '#F48FB1', '#F06292', '#EC407A', '#E91E63', '#FF80AB', '#FF4081', '#F50057', '#C51162'];
 
-        // State
-        const flowers = [];
-        const hearts = [];
-        const clouds = [];
-        
-        // Ambient wind only (no mouse interaction)
-        let timeOffset = 0;
-
-        // Expanded Pink Palette for variety
-        const petalColors = [
-            '#FFB7B2', '#FF9AA2', '#FFDAC1', '#FF69B4', '#FFC0CB', 
-            '#F8BBD0', '#F48FB1', '#F06292', '#EC407A', '#E91E63',
-            '#FF80AB', '#FF4081', '#F50057', '#C51162'
-        ];
-
-        /**
-         * Utility Functions
-         */
         const random = (min, max) => Math.random() * (max - min) + min;
         const randomColor = () => petalColors[Math.floor(Math.random() * petalColors.length)];
 
@@ -266,387 +256,88 @@ With all my love,
             canvas.width = width * dpr;
             canvas.height = height * dpr;
             ctx.scale(dpr, dpr);
-            
             initWorld();
         }
 
-        /**
-         * Classes
-         */
-
         class Heart {
             constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.size = random(5, 12);
-                this.speedY = random(0.5, 1.5);
-                this.speedX = random(-0.3, 0.3);
-                this.life = 1.0; 
-                this.decay = random(0.005, 0.01);
+                this.x = x; this.y = y; this.size = random(5, 12);
+                this.speedY = random(0.5, 1.5); this.speedX = random(-0.3, 0.3);
+                this.life = 1.0; this.decay = random(0.005, 0.01);
                 this.wobble = random(0, Math.PI * 2);
                 this.color = `rgba(255, ${Math.floor(random(180, 255))}, ${Math.floor(random(180, 255))}`;
             }
-
-            update() {
-                this.y -= this.speedY;
-                this.x += this.speedX;
-                this.life -= this.decay;
-                this.wobble += 0.05;
-                this.x += Math.sin(this.wobble) * 0.3;
-            }
-
-            draw() {
-                if (this.life <= 0) return;
-                
-                ctx.save();
-                ctx.globalAlpha = this.life;
-                ctx.fillStyle = `${this.color}, ${this.life})`;
-                ctx.translate(this.x, this.y);
-                
-                const s = this.size;
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.bezierCurveTo(-s/2, -s/2, -s, s/3, 0, s);
-                ctx.bezierCurveTo(s, s/3, s/2, -s/2, 0, 0);
-                ctx.fill();
-                ctx.restore();
-            }
+            update() { this.y -= this.speedY; this.x += this.speedX; this.life -= this.decay; this.wobble += 0.05; this.x += Math.sin(this.wobble) * 0.3; }
+            draw() { if (this.life <= 0) return; ctx.save(); ctx.globalAlpha = this.life; ctx.fillStyle = `${this.color}, ${this.life})`; ctx.translate(this.x, this.y); const s = this.size; ctx.beginPath(); ctx.moveTo(0, 0); ctx.bezierCurveTo(-s/2, -s/2, -s, s/3, 0, s); ctx.bezierCurveTo(s, s/3, s/2, -s/2, 0, 0); ctx.fill(); ctx.restore(); }
         }
 
         class Cloud {
             constructor() {
-                this.x = random(0, width);
-                this.y = random(0, height * 0.4);
-                this.speed = random(0.05, 0.2);
-                this.size = random(0.5, 1.2);
-                this.puffs = [];
-                
-                const puffCount = Math.floor(random(3, 6));
-                for(let i=0; i<puffCount; i++) {
-                    this.puffs.push({
-                        x: random(-40, 40),
-                        y: random(-20, 20),
-                        r: random(30, 60)
-                    });
-                }
+                this.x = random(0, width); this.y = random(0, height * 0.4);
+                this.speed = random(0.05, 0.2); this.size = random(0.5, 1.2); this.puffs = [];
+                for(let i=0; i<Math.floor(random(3, 6)); i++) this.puffs.push({x: random(-40, 40), y: random(-20, 20), r: random(30, 60)});
             }
-
-            update() {
-                this.x += this.speed;
-                if (this.x - 100 > width) {
-                    this.x = -150;
-                    this.y = random(0, height * 0.4);
-                }
-            }
-
-            draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.scale(this.size, this.size);
-                ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
-                
-                ctx.beginPath();
-                this.puffs.forEach(puff => {
-                    ctx.moveTo(puff.x + puff.r, puff.y);
-                    ctx.arc(puff.x, puff.y, puff.r, 0, Math.PI * 2);
-                });
-                ctx.fill();
-                ctx.restore();
-            }
+            update() { this.x += this.speed; if (this.x - 100 > width) { this.x = -150; this.y = random(0, height * 0.4); } }
+            draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.scale(this.size, this.size); ctx.fillStyle = "rgba(255, 255, 255, 0.6)"; ctx.beginPath(); this.puffs.forEach(p => { ctx.moveTo(p.x + p.r, p.y); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); }); ctx.fill(); ctx.restore(); }
         }
 
         class Flower {
             constructor(x, y, scale, depth) {
-                this.x = x;
-                this.y = y;
-                this.scale = scale; 
-                this.depth = depth;
-                
-                this.stemHeight = random(50, 100) * this.scale;
-                this.color = randomColor();
-                this.swayOffset = random(0, Math.PI * 2);
-                this.swaySpeed = random(0.002, 0.004);
-                
-                // 5 visual types mapped to the requested varieties
-                // 0: Rose/Peony/Camellia (Dense, round, layered)
-                // 1: Tulip (Cup shape)
-                // 2: Daisy/Cosmos/Gerbera/Zinnia (Ray petals)
-                // 3: Hydrangea/Phlox (Cluster)
-                // 4: Cherry Blossom/Petunia/Impatiens (5 petals, simple)
-                this.type = Math.floor(random(0, 5));
-                
-                this.heartTimer = random(0, 500);
+                this.x = x; this.y = y; this.scale = scale; this.depth = depth;
+                this.stemHeight = random(50, 100) * this.scale; this.color = randomColor();
+                this.swayOffset = random(0, Math.PI * 2); this.swaySpeed = random(0.002, 0.004);
+                this.type = Math.floor(random(0, 5)); this.heartTimer = random(0, 500);
             }
-
             update(time) {
-                // Gentle ambient sway
                 this.currentSway = Math.sin(time * this.swaySpeed + this.swayOffset) * (5 * this.scale);
-                
-                // Randomly emit hearts
                 this.heartTimer++;
-                if (this.heartTimer > 600) { 
-                    if (Math.random() > 0.7) {
-                        const tipX = this.x + this.currentSway;
-                        const tipY = this.y - this.stemHeight;
-                        hearts.push(new Heart(tipX, tipY));
-                    }
-                    this.heartTimer = 0;
-                }
+                if (this.heartTimer > 600) { if (Math.random() > 0.7) hearts.push(new Heart(this.x + this.currentSway, this.y - this.stemHeight)); this.heartTimer = 0; }
             }
-
             draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                
-                // Draw Stem
+                ctx.save(); ctx.translate(this.x, this.y);
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(this.currentSway / 2, -this.stemHeight / 2, this.currentSway, -this.stemHeight);
+                ctx.lineWidth = 3 * this.scale; ctx.strokeStyle = '#558B2F'; ctx.lineCap = 'round'; ctx.stroke();
                 ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.quadraticCurveTo(this.currentSway / 2, -this.stemHeight / 2, this.currentSway, -this.stemHeight);
-                ctx.lineWidth = 3 * this.scale;
-                ctx.strokeStyle = '#558B2F'; 
-                ctx.lineCap = 'round';
-                ctx.stroke();
-
-                // Draw Leaves (Slightly different leaves for variety)
-                ctx.beginPath();
-                if (this.type === 1) { // Tulip leaves are longer
-                     ctx.moveTo(0, -10 * this.scale);
-                     ctx.quadraticCurveTo(-10 * this.scale, -this.stemHeight * 0.5, -20 * this.scale, -this.stemHeight * 0.8);
-                     ctx.quadraticCurveTo(-5 * this.scale, -this.stemHeight * 0.5, 0, -this.stemHeight * 0.2);
-                } else { // Standard leaves
-                    ctx.moveTo(0, -this.stemHeight * 0.3);
-                    ctx.quadraticCurveTo(-15 * this.scale, -this.stemHeight * 0.4, 0, -this.stemHeight * 0.5);
-                    ctx.moveTo(0, -this.stemHeight * 0.4);
-                    ctx.quadraticCurveTo(15 * this.scale, -this.stemHeight * 0.5, 0, -this.stemHeight * 0.6);
-                }
-                ctx.fillStyle = '#7CB342';
-                ctx.fill();
-
-                // Move to top of stem
-                ctx.translate(this.currentSway, -this.stemHeight);
-                
-                // Draw Flower Head based on Type
-                ctx.fillStyle = this.color;
-                
-                switch(this.type) {
-                    case 0: // Rose/Peony
-                        this.drawRose(ctx, this.scale, this.color);
-                        break;
-                    case 1: // Tulip
-                        this.drawTulip(ctx, this.scale, this.color);
-                        break;
-                    case 2: // Daisy/Cosmos
-                        this.drawDaisy(ctx, this.scale, this.color);
-                        break;
-                    case 3: // Hydrangea
-                        this.drawHydrangea(ctx, this.scale, this.color);
-                        break;
-                    case 4: // Cherry Blossom/Simple
-                        this.drawBlossom(ctx, this.scale, this.color);
-                        break;
-                }
-                
+                if (this.type === 1) { ctx.moveTo(0, -10 * this.scale); ctx.quadraticCurveTo(-10 * this.scale, -this.stemHeight * 0.5, -20 * this.scale, -this.stemHeight * 0.8); ctx.quadraticCurveTo(-5 * this.scale, -this.stemHeight * 0.5, 0, -this.stemHeight * 0.2); } 
+                else { ctx.moveTo(0, -this.stemHeight * 0.3); ctx.quadraticCurveTo(-15 * this.scale, -this.stemHeight * 0.4, 0, -this.stemHeight * 0.5); ctx.moveTo(0, -this.stemHeight * 0.4); ctx.quadraticCurveTo(15 * this.scale, -this.stemHeight * 0.5, 0, -this.stemHeight * 0.6); }
+                ctx.fillStyle = '#7CB342'; ctx.fill();
+                ctx.translate(this.currentSway, -this.stemHeight); ctx.fillStyle = this.color;
+                if(this.type===0) this.drawRose(ctx, this.scale); else if(this.type===1) this.drawTulip(ctx, this.scale); else if(this.type===2) this.drawDaisy(ctx, this.scale); else if(this.type===3) this.drawHydrangea(ctx, this.scale); else this.drawBlossom(ctx, this.scale);
                 ctx.restore();
             }
-
-            // --- Drawing Primitives for Flower Types ---
-
-            drawRose(ctx, s, color) {
-                // Layered circles
-                const r = 12 * s;
-                ctx.beginPath();
-                ctx.arc(0, 0, r, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Inner petals
-                ctx.fillStyle = 'rgba(255,255,255,0.2)';
-                ctx.beginPath();
-                ctx.arc(-r/3, -r/3, r/2, 0, Math.PI*2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(r/3, r/3, r/2.5, 0, Math.PI*2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(0, 0, r/4, 0, Math.PI*2);
-                ctx.fillStyle = 'rgba(0,0,0,0.1)'; // Shadow center
-                ctx.fill();
-            }
-
-            drawTulip(ctx, s, color) {
-                const w = 15 * s;
-                const h = 20 * s;
-                ctx.beginPath();
-                // Cup shape
-                ctx.moveTo(-w/2, 0);
-                ctx.bezierCurveTo(-w, -h/2, -w/2, -h, 0, -h); // Left side
-                ctx.bezierCurveTo(w/2, -h, w, -h/2, w/2, 0); // Right side
-                ctx.closePath();
-                ctx.fill();
-                
-                // Petal definition lines
-                ctx.strokeStyle = 'rgba(0,0,0,0.1)';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.lineTo(0, -h * 0.8);
-                ctx.stroke();
-            }
-
-            drawDaisy(ctx, s, color) {
-                const petalCount = 12;
-                const petalL = 15 * s;
-                const petalW = 4 * s;
-                
-                for(let i=0; i<petalCount; i++) {
-                    ctx.save();
-                    ctx.rotate((Math.PI*2/petalCount) * i);
-                    ctx.beginPath();
-                    ctx.ellipse(0, petalL/2, petalW/2, petalL/2, 0, 0, Math.PI*2);
-                    ctx.fill();
-                    ctx.restore();
-                }
-                // Center
-                ctx.beginPath();
-                ctx.arc(0, 0, 4 * s, 0, Math.PI * 2);
-                ctx.fillStyle = '#FFEB3B';
-                ctx.fill();
-            }
-
-            drawHydrangea(ctx, s, color) {
-                // Cluster of small circles
-                const count = 7;
-                const r = 6 * s;
-                
-                // Draw a bunch of small circles around the center
-                const offsets = [
-                    {x:0, y:0}, {x:r, y:0}, {x:-r, y:0},
-                    {x:0, y:r}, {x:0, y:-r}, 
-                    {x:r*0.7, y:r*0.7}, {x:-r*0.7, y:-r*0.7}
-                ];
-                
-                offsets.forEach(off => {
-                    ctx.beginPath();
-                    ctx.arc(off.x, off.y, r, 0, Math.PI*2);
-                    ctx.fill();
-                });
-            }
-
-            drawBlossom(ctx, s, color) {
-                const petalCount = 5;
-                const petalL = 12 * s;
-                
-                for(let i=0; i<petalCount; i++) {
-                    ctx.save();
-                    ctx.rotate((Math.PI*2/petalCount) * i);
-                    ctx.beginPath();
-                    // Heart shaped petal
-                    ctx.moveTo(0,0);
-                    ctx.quadraticCurveTo(-petalL/2, petalL, 0, petalL * 1.3);
-                    ctx.quadraticCurveTo(petalL/2, petalL, 0, 0);
-                    ctx.fill();
-                    ctx.restore();
-                }
-                // Center
-                ctx.beginPath();
-                ctx.arc(0, 0, 2 * s, 0, Math.PI * 2);
-                ctx.fillStyle = '#FFF176';
-                ctx.fill();
-            }
+            drawRose(ctx, s) { const r=12*s; ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fill(); ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.beginPath(); ctx.arc(-r/3,-r/3,r/2,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(r/3,r/3,r/2.5,0,Math.PI*2); ctx.fill(); }
+            drawTulip(ctx, s) { const w=15*s, h=20*s; ctx.beginPath(); ctx.moveTo(-w/2,0); ctx.bezierCurveTo(-w,-h/2,-w/2,-h,0,-h); ctx.bezierCurveTo(w/2,-h,w,-h/2,w/2,0); ctx.fill(); ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-h*0.8); ctx.stroke(); }
+            drawDaisy(ctx, s) { const p=12, l=15*s, w=4*s; for(let i=0;i<p;i++){ ctx.save(); ctx.rotate((Math.PI*2/p)*i); ctx.beginPath(); ctx.ellipse(0,l/2,w/2,l/2,0,0,Math.PI*2); ctx.fill(); ctx.restore(); } ctx.beginPath(); ctx.arc(0,0,4*s,0,Math.PI*2); ctx.fillStyle='#FFEB3B'; ctx.fill(); }
+            drawHydrangea(ctx, s) { const r=6*s, o=[{x:0,y:0},{x:r,y:0},{x:-r,y:0},{x:0,y:r},{x:0,y:-r},{x:r*0.7,y:r*0.7},{x:-r*0.7,y:-r*0.7}]; o.forEach(k=>{ ctx.beginPath(); ctx.arc(k.x,k.y,r,0,Math.PI*2); ctx.fill(); }); }
+            drawBlossom(ctx, s) { const p=5, l=12*s; for(let i=0;i<p;i++){ ctx.save(); ctx.rotate((Math.PI*2/p)*i); ctx.beginPath(); ctx.moveTo(0,0); ctx.quadraticCurveTo(-l/2,l,0,l*1.3); ctx.quadraticCurveTo(l/2,l,0,0); ctx.fill(); ctx.restore(); } ctx.beginPath(); ctx.arc(0,0,2*s,0,Math.PI*2); ctx.fillStyle='#FFF176'; ctx.fill(); }
         }
 
-        /**
-         * Initialization
-         */
         function initWorld() {
-            flowers.length = 0;
-            clouds.length = 0;
-            hearts.length = 0;
-
-            // Create clouds
-            for(let i = 0; i < 5; i++) {
-                clouds.push(new Cloud());
+            flowers.length=0; clouds.length=0; hearts.length=0;
+            for(let i=0;i<5;i++) clouds.push(new Cloud());
+            const den = Math.floor(width/15);
+            for (let i=0; i<den*3; i++) {
+                const x = random(0, width), y = random(height*0.6, height+50);
+                const d = (y-height*0.6)/(height*0.4), s = 0.3+(d*0.9)+random(-0.1,0.1);
+                flowers.push(new Flower(x, y, Math.max(0.2, s), d));
             }
-
-            // Create flowers
-            const density = Math.floor(width / 15); // Slightly denser
-            
-            for (let i = 0; i < density * 3; i++) {
-                const x = random(0, width);
-                const y = random(height * 0.6, height + 50);
-                const depth = (y - height * 0.6) / (height * 0.4);
-                const scale = 0.3 + (depth * 0.9) + random(-0.1, 0.1);
-
-                flowers.push(new Flower(x, y, Math.max(0.2, scale), depth));
-            }
-
-            flowers.sort((a, b) => a.y - b.y);
+            flowers.sort((a,b)=>a.y-b.y);
         }
 
-        /**
-         * Main Loop
-         */
         function animate(time) {
-            ctx.clearRect(0, 0, width, height);
-
-            // Sky
-            const gradient = ctx.createLinearGradient(0, 0, 0, height);
-            gradient.addColorStop(0, '#A1C4FD');
-            gradient.addColorStop(0.5, '#C2E9FB');
-            gradient.addColorStop(1, '#FFC3A0');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, width, height);
-
-            // Sun
-            ctx.save();
-            ctx.shadowBlur = 50;
-            ctx.shadowColor = "white";
-            ctx.fillStyle = "rgba(255, 255, 230, 0.8)";
-            ctx.beginPath();
-            ctx.arc(width * 0.8, height * 0.15, 40, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-
-            // Clouds
-            clouds.forEach(cloud => {
-                cloud.update();
-                cloud.draw();
-            });
-
-            // Ground
-            const groundGrad = ctx.createLinearGradient(0, height * 0.6, 0, height);
-            groundGrad.addColorStop(0, '#81C784');
-            groundGrad.addColorStop(1, '#2E7D32');
-            ctx.fillStyle = groundGrad;
-            ctx.fillRect(0, height * 0.6, width, height * 0.4);
-
-            // Flowers
-            flowers.forEach(flower => {
-                flower.update(time);
-                flower.draw();
-            });
-
-            // Hearts
-            for (let i = hearts.length - 1; i >= 0; i--) {
-                const h = hearts[i];
-                h.update();
-                h.draw();
-                if (h.life <= 0) {
-                    hearts.splice(i, 1);
-                }
-            }
-
+            ctx.clearRect(0,0,width,height);
+            const g = ctx.createLinearGradient(0,0,0,height); g.addColorStop(0,'#A1C4FD'); g.addColorStop(1,'#FFC3A0'); ctx.fillStyle=g; ctx.fillRect(0,0,width,height);
+            ctx.save(); ctx.shadowBlur=50; ctx.shadowColor="white"; ctx.fillStyle="rgba(255,255,230,0.8)"; ctx.beginPath(); ctx.arc(width*0.8,height*0.15,40,0,Math.PI*2); ctx.fill(); ctx.restore();
+            clouds.forEach(c=>{c.update();c.draw();});
+            const gg = ctx.createLinearGradient(0,height*0.6,0,height); gg.addColorStop(0,'#81C784'); gg.addColorStop(1,'#2E7D32'); ctx.fillStyle=gg; ctx.fillRect(0,height*0.6,width,height*0.4);
+            flowers.forEach(f=>{f.update(time);f.draw();});
+            for(let i=hearts.length-1;i>=0;i--){ hearts[i].update(); hearts[i].draw(); if(hearts[i].life<=0) hearts.splice(i,1); }
             requestAnimationFrame(animate);
         }
 
-        /**
-         * Event Listeners
-         */
         window.addEventListener('resize', resize);
-
-        // Start
         resize();
         requestAnimationFrame(animate);
-
     </script>
 </body>
 </html>
